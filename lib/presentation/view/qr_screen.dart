@@ -13,11 +13,11 @@ class QRScannerScreen extends GetView<RootViewModel> {
       appBar: AppBar(
         scrolledUnderElevation: 0,
         title: const Text(''),
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.white,
         leading: IconButton(
-          icon: const Icon(Icons.clear, color: Colors.white),
+          icon: const Icon(Icons.clear, color: Colors.black),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.pop(context, false);
           },
         ),
       ),
@@ -26,12 +26,11 @@ class QRScannerScreen extends GetView<RootViewModel> {
           MobileScanner(
             onDetect: (capture) {
               final Barcode barcode = capture.barcodes.first;
-              controller.onQRCodeScanned(barcode.rawValue ?? "");
-
-              Future.delayed(
-                const Duration(milliseconds: 500),
-                () {
-                  Get.back();
+              controller.onQRCodeScanned(barcode.rawValue ?? "").then(
+                (value) {
+                  if (value) {
+                    Navigator.pop(context, true);
+                  }
                 },
               );
             },
