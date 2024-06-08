@@ -2,4 +2,5 @@
 
 abstract class Routes {
   static const String ROOT = '/';
+  static const String QR_SCANNER = '/qr-scanner';
 }

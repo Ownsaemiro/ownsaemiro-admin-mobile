@@ -17,10 +17,10 @@ class TicketState {
     Map<String, dynamic> json = jsonDecode(jsonString);
 
     return TicketState(
-      eventId: json["event_id"],
+      eventId: json["ticket_id"],
       userId: json["user_id"],
       deviceId: json["device_id"],
-      ticketHash: json["ticket_hash"],
+      ticketHash: json["event_hash"],
     );
   }
 }

@@ -14,9 +14,9 @@ class TicketRepositoryImpl extends GetxService implements TicketRepository {
   }
 
   @override
-  Future<Map<String, dynamic>> checkTicket(String ticketId, String userId,
-      String deviceId, String ticketHash) async {
-    Map<String, dynamic> result;
+  Future<bool> checkTicket(String ticketId, String userId, String deviceId,
+      String ticketHash) async {
+    bool result;
 
     try {
       result = await _ticketProvider.checkTicket(
