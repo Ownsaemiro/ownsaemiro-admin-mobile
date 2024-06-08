@@ -7,11 +7,30 @@ import 'package:ownsaemiro_admin/presentation/view_model/root_view_model.dart';
 class RootScreen extends BaseScreen<RootViewModel> {
   const RootScreen({super.key});
 
-  void _navigateToQRScanner(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const QRScannerScreen()),
-    );
+  Future<void> _navigateToQRScanner(BuildContext context) async {
+    final bool isClosed = await Get.to(() => const QRScannerScreen());
+
+    if (isClosed) {
+      if (viewModel.isMatched.value) {
+        viewModel.playSuccessSound();
+        Get.snackbar(
+          "QR 코드와 사용자 정보가 일치합니다.",
+          "정상적인 사용자입니다.",
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
+      } else {
+        viewModel.playFailedSound();
+        Get.snackbar(
+          "QR 코드와 사용자 정보가 일치하지 않습니다.",
+          "비정상적인 사용자입니다.",
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+      }
+    }
   }
 
   @override
@@ -22,24 +41,19 @@ class RootScreen extends BaseScreen<RootViewModel> {
         children: [
           ElevatedButton(
             style: ElevatedButton.styleFrom(
+              fixedSize: const Size(200, 200),
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             ),
-            onPressed: () {
-              _navigateToQRScanner(context);
-            },
-            child: const Text("Scan QR Code"),
+            onPressed: () => _navigateToQRScanner(context),
+            child: const Text(
+              "Scan",
+              style: TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black),
+            ),
           ),
           const SizedBox(height: 20),
-          Obx(() {
-            final scannedData = viewModel.scannedData.value;
-            return Text(
-              scannedData.isEmpty
-                  ? "No data scanned"
-                  : "Scanned data: $scannedData",
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 16),
-            );
-          }),
         ],
       ),
     );
