@@ -11,7 +11,8 @@ class RootViewModel extends GetxController {
 
   final RxString scannedData = ''.obs;
   final RxBool isMatched = false.obs;
-  final RxBool isDone = false.obs;
+  RxString errorMessage = ''.obs;
+  final RxBool isScanningEnabled = true.obs;
 
   @override
   void onInit() {
@@ -42,7 +43,7 @@ class RootViewModel extends GetxController {
     _nonPassPlayer.stop();
   }
 
-  Future<bool> onQRCodeScanned(String data) async {
+  Future<void> onQRCodeScanned(String data) async {
     scannedData.value = data;
 
     try {
@@ -54,22 +55,30 @@ class RootViewModel extends GetxController {
         ticketState.ticketHash,
       );
 
-      if (result == true) {
+      LogUtil.info(result);
+
+      LogUtil.info(result["success"]);
+      LogUtil.info(result["message"]);
+
+      if (result["success"] == true) {
         isMatched.value = true;
-        isDone.value = true;
-        LogUtil.info("Ticket matched: ${ticketState.eventId}");
-        return true; // 스캔 성공 시 true 반환
       } else {
         isMatched.value = false;
-        isDone.value = true;
-        LogUtil.info("Ticket not matched: ${ticketState.eventId}");
-        return true; // 스캔 실패 시 true 반환
+
+        if (result["message"]) {
+          errorMessage.value = result["message"];
+
+          LogUtil.info(errorMessage.value);
+        } else {
+          errorMessage.value = "서버와 통신 중 오류가 발생했습니다. 다시 시도해주세요.";
+        }
+
+        LogUtil.info(errorMessage.value);
       }
     } catch (e) {
       LogUtil.error(e.toString());
       isMatched.value = false;
-      isDone.value = false;
-      return false; // 예외 발생 시 false 반환
+      errorMessage.value = "서버와 통신 중 오류가 발생했습니다. 다시 시도해주세요.";
     }
   }
 }

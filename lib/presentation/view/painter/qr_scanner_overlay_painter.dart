@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// QR 스캐너 오버레이를 그리는 페인터
 class QRScannerOverlayPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {

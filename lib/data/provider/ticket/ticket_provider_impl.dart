@@ -5,8 +5,8 @@ import 'package:ownsaemiro_admin/data/provider/ticket/ticket_provider.dart';
 
 class TicketProviderImpl extends BaseConnect implements TicketProvider {
   @override
-  Future<bool> checkTicket(String ticketId, String userId, String deviceId,
-      String ticketHash) async {
+  Future<Map<String, dynamic>> checkTicket(String ticketId, String userId,
+      String deviceId, String ticketHash) async {
     final Response response;
 
     try {
@@ -16,12 +16,13 @@ class TicketProviderImpl extends BaseConnect implements TicketProvider {
         "device_id": deviceId,
         "event_hash": ticketHash,
       });
+
+      if (response.statusCode != 200) {
+        return response.body;
+      }
     } catch (e) {
       rethrow;
     }
-
-    LogUtil.info(response.toString());
-
-    return response.body["success"];
+    return response.body;
   }
 }
